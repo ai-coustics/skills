@@ -1,0 +1,52 @@
+[
+  {
+    "id": "ai-coustics-speech-enhancement-single-file-001",
+    "question": "Enhance interview.wav with the ai-coustics SDK and save it next to the original.",
+    "expected_skill": "ai-coustics-speech-enhancement",
+    "expected_script": "scripts/enhance.py",
+    "ground_truth": "The agent activates ai-coustics-speech-enhancement, checks for a license key without echoing it, runs enhance.py with the default model (alias `vf`, resolved at run time to the newest Quail Voice Focus L 16 kHz build) and enhancement level 1.0, writing interview_enhanced.wav, then reports path, duration, sample rate and the resolved model id printed on stderr.",
+    "expected_behavior": [
+      "Confirm a license key env var is set before running; never print the value.",
+      "Use the default `vf` model when none is specified and relay the `model: \u2026 (resolved from 'vf'; \u2026)` line so the user knows which build ran.",
+      "Name the output `{stem}_enhanced.{ext}` when no output path is given.",
+      "Verify the output file exists and report duration and sample rate."
+    ]
+  },
+  {
+    "id": "ai-coustics-speech-enhancement-folder-001",
+    "question": "Batch-enhance every recording under ./raw_calls/ into ./enhanced/ with voice focus at level 0.7.",
+    "expected_skill": "ai-coustics-speech-enhancement",
+    "expected_script": "scripts/enhance.py",
+    "ground_truth": "The agent runs enhance.py in folder mode with --enhancement-level 0.7 and a --workers value sized to the file count (capped at 16), and notes that the output mirrors the input directory structure and is mono.",
+    "expected_behavior": [
+      "Use folder mode with both input and output directories, not a per-file loop.",
+      "Pass --enhancement-level 0.7.",
+      "Set --workers based on the number of files, capped at 16.",
+      "Mention that SDK 3.x output is mono at the input sample rate."
+    ]
+  },
+  {
+    "id": "ai-coustics-speech-enhancement-model-choice-001",
+    "question": "I need to enhance 48 kHz studio recordings with the AIC SDK. Which model should I use?",
+    "expected_skill": "ai-coustics-speech-enhancement",
+    "expected_script": null,
+    "ground_truth": "The agent picks a 48 kHz family spec: `vf 48k` (quail-vf-l-48khz) for primary-speaker isolation or `rook 48k` (rook-ms-l-48khz) for perceptual quality, and confirms availability with --list-models rather than quoting versions from memory.",
+    "expected_behavior": [
+      "Pick a 48 kHz family spec or alias rather than the 16 kHz default.",
+      "Run or recommend `--list-models` to confirm which 48 kHz builds the installed SDK can load.",
+      "Do not state a specific model version as fact; let the script's resolution line report it.",
+      "Do not recommend a VAD or Tyto model."
+    ]
+  },
+  {
+    "id": "ai-coustics-speech-enhancement-negative-vad-001",
+    "question": "Run the AIC VAD model over this file and give me speech probabilities.",
+    "expected_skill": "ai-coustics-voice-activity-detection",
+    "expected_script": null,
+    "ground_truth": "This is a VAD request. enhance.py rejects VAD artifacts by design. The agent should use the ai-coustics-voice-activity-detection skill instead of running enhance.py with a VAD model.",
+    "expected_behavior": [
+      "Do not run enhance.py with a `vad-*` model; the script rejects VAD specs and names the right skill.",
+      "Activate ai-coustics-voice-activity-detection, which drives aic.Vad and reports probabilities and segments."
+    ]
+  }
+]

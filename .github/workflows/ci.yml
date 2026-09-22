@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validate skills
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Frontmatter, naming and cross-reference checks
+        run: uv run scripts/validate_skills.py
+
+  test:
+    name: Script tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: pytest (SDK stubbed, no license key needed)
+        run: uv run --with "pytest>=8" --with "numpy>=1.24" --with "pyyaml>=6" pytest tests/ -v

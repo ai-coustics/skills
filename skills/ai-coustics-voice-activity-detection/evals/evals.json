@@ -1,0 +1,51 @@
+[
+  {
+    "id": "ai-coustics-voice-activity-detection-segments-001",
+    "question": "Find the speech segments in interview.wav and give me start and end times as a CSV.",
+    "expected_skill": "ai-coustics-voice-activity-detection",
+    "expected_script": "scripts/detect.py",
+    "ground_truth": "The agent activates ai-coustics-voice-activity-detection, checks for a license key without echoing it, runs detect.py with --out-csv, and reports speech coverage, segment count and first onset, noting that timestamps are already compensated for the VAD's prediction delay.",
+    "expected_behavior": [
+      "Confirm a license key env var is set before running; never print the value.",
+      "Run `uv run {BASE_DIR}/scripts/detect.py interview.wav --out-csv <path>` with the default VAD Multi Speaker model.",
+      "Lead with speech seconds/percent, segment count and first onset.",
+      "Do not run the speech-enhancement or Tyto scripts for this request."
+    ]
+  },
+  {
+    "id": "ai-coustics-voice-activity-detection-tuning-001",
+    "question": "Our voice agent keeps interrupting callers. Help me tune the ai-coustics VAD on these recordings in ./calls/.",
+    "expected_skill": "ai-coustics-voice-activity-detection",
+    "expected_script": "scripts/detect.py",
+    "ground_truth": "The agent runs detect.py in folder mode with --out-json to get raw probabilities, explains that sensitivity is a probability threshold where higher means fewer detections, and proposes raising --sensitivity and/or --speech-hold based on the probability distribution rather than guessing.",
+    "expected_behavior": [
+      "Use folder mode on ./calls/ with --out-json.",
+      "Explain the direction of sensitivity correctly: higher = less aggressive detection.",
+      "Mention speech_hold_duration and minimum_speech_duration as the stability controls.",
+      "Recommend choosing the threshold from raw_vad_probability on real audio."
+    ]
+  },
+  {
+    "id": "ai-coustics-voice-activity-detection-primary-speaker-001",
+    "question": "Detect only when the main speaker talks in this recording; there is a TV on in the background with people talking.",
+    "expected_skill": "ai-coustics-voice-activity-detection",
+    "expected_script": "scripts/detect.py",
+    "ground_truth": "The agent picks VAD Voice Focus (`--model-name vf`, resolved at run time to the newest vad-vf-* build) because it fires on the primary speaker only and ignores interfering and media speech, and runs detect.py with it.",
+    "expected_behavior": [
+      "Choose `--model-name vf` rather than the default multi-speaker model.",
+      "Explain that VAD Voice Focus targets the primary speaker dynamically.",
+      "Do not chain speech enhancement before the VAD; the VAD reads the original audio."
+    ]
+  },
+  {
+    "id": "ai-coustics-voice-activity-detection-negative-enhance-001",
+    "question": "Clean up the background noise in this call so the STT works better.",
+    "expected_skill": "ai-coustics-speech-enhancement",
+    "expected_script": null,
+    "ground_truth": "This is an enhancement request. The agent should use ai-coustics-speech-enhancement; the VAD only detects speech and never modifies audio.",
+    "expected_behavior": [
+      "Do not activate ai-coustics-voice-activity-detection as the primary skill.",
+      "If VAD is mentioned, only as an optional way to check speech coverage before and after."
+    ]
+  }
+]

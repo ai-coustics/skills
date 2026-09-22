@@ -1,0 +1,75 @@
+[
+  {
+    "id": "ai-coustics-audio-insight-single-file-001",
+    "question": "Score call_0421.wav with Tyto and tell me whether it would cause problems for my voice agent.",
+    "expected_skill": "ai-coustics-audio-insight",
+    "expected_script": "scripts/score.py",
+    "ground_truth": "The agent activates ai-coustics-audio-insight, checks for an AIC SDK license key without echoing it, runs score.py on the file (default `tyto-l-16khz`, resolved to the newest Tyto the SDK can load), and reports the mean risk_score with its band first, then the worst degradation dimension, noting that speaker_loudness is a neutral level meter and that scores are per 5-second window.",
+    "expected_behavior": [
+      "Confirm a license key env var is set before running; ask the user to set one if missing, never print the value.",
+      "Run `uv run {BASE_DIR}/scripts/score.py call_0421.wav` in single-file mode.",
+      "Lead with risk_score and its Good/Warn/Bad band, then the 'why' dimension.",
+      "Do not describe risk_score as a perceptual or MOS-style quality score."
+    ]
+  },
+  {
+    "id": "ai-coustics-audio-insight-folder-dashboard-001",
+    "question": "I have a folder of 300 call recordings. Rank them for QA review and give me the JSON I can upload to the call-analysis dashboard.",
+    "expected_skill": "ai-coustics-audio-insight",
+    "expected_script": "scripts/score.py",
+    "ground_truth": "The agent runs score.py in folder mode with --out-json (and optionally --out-csv), then recommends ranking by frac_degraded or p95 rather than mean alone, and points to https://call-analysis.ai-coustics.com/ for upload.",
+    "expected_behavior": [
+      "Use folder mode on the directory, not a per-file loop.",
+      "Pass --out-json to produce the dashboard JSON.",
+      "Explain that percentile ranking within the user's own calls beats absolute thresholds for triage.",
+      "Mention the 'why' (worst dimension) as a way to group systemic issues."
+    ]
+  },
+  {
+    "id": "ai-coustics-audio-insight-llm-judge-001",
+    "question": "Our LLM judge scores call transcripts against a rubric and keeps marking the agent down for 'did not listen' when callers repeat themselves. Can we tell whether that is the agent or the audio? The recordings are in ./calls/.",
+    "expected_skill": "ai-coustics-audio-insight",
+    "expected_script": "scripts/score.py",
+    "ground_truth": "The agent runs score.py in folder mode with --out-judge (and --out-csv), explains that the per-call Markdown blocks list degraded intervals with timestamps and a driver, and proposes feeding each block into the judge prompt alongside the transcript so repeated questions inside degraded intervals are attributed to audio rather than to the agent. It also suggests bucketing calls by risk band to see whether the 'did not listen' verdicts concentrate in degraded calls.",
+    "expected_behavior": [
+      "Use folder mode on ./calls/ with --out-judge.",
+      "Explain that intervals are on the call timeline and can be aligned with transcript turn timestamps.",
+      "Recommend adding the block to the judge prompt as a covariate, not as a rubric score.",
+      "Do not present risk_score as a tone, empathy or sentiment measure."
+    ]
+  },
+  {
+    "id": "ai-coustics-audio-insight-interpretation-001",
+    "question": "Tyto gave my call a speaker_loudness of 0.9. Is that bad?",
+    "expected_skill": "ai-coustics-audio-insight",
+    "expected_script": null,
+    "ground_truth": "The agent explains that speaker_loudness is the one neutral dimension: high means a loud speaker, which is fine, and consistently low is the failure mode. It should not be treated as a degradation like noise or packet_loss.",
+    "expected_behavior": [
+      "State that higher is worse for every dimension except speaker_loudness.",
+      "Do not recommend enhancement or intervention based on a high loudness value alone."
+    ]
+  },
+  {
+    "id": "ai-coustics-audio-insight-negative-enhance-001",
+    "question": "Remove the background noise from this recording so it sounds cleaner.",
+    "expected_skill": "ai-coustics-speech-enhancement",
+    "expected_script": null,
+    "ground_truth": "This is an enhancement request, not a scoring request. The agent should reach for ai-coustics-speech-enhancement (or another enhancement tool), not ai-coustics-audio-insight. Tyto only measures; it does not modify audio.",
+    "expected_behavior": [
+      "Do not activate ai-coustics-audio-insight as the primary skill.",
+      "If Tyto is mentioned at all, it is only as an optional before/after measurement."
+    ]
+  },
+  {
+    "id": "ai-coustics-audio-insight-remedy-001",
+    "question": "Tyto says most of our flagged calls are driven by interfering_speech. What should we do about it?",
+    "expected_skill": "ai-coustics-audio-insight",
+    "expected_script": null,
+    "ground_truth": "The agent explains that interfering_speech means competing voices (another person, TV, radio) over the caller and recommends Quail Voice Focus, which isolates the primary speaker before VAD and STT, via the ai-coustics-speech-enhancement skill (alias vf). It can offer to run a before/after Tyto comparison on enhanced audio.",
+    "expected_behavior": [
+      "Name Quail Voice Focus as the remedy for interfering_speech.",
+      "Point to the ai-coustics-speech-enhancement skill (alias `vf`) to apply it.",
+      "Do not recommend Multi Speaker enhancement as the primary fix for competing speech."
+    ]
+  }
+]

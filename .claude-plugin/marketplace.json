@@ -1,0 +1,18 @@
+{
+  "name": "ai-coustics",
+  "owner": {
+    "name": "ai-coustics",
+    "url": "https://github.com/ai-coustics/skills"
+  },
+  "metadata": {
+    "description": "Official ai-coustics agent skills: speech enhancement, audio insight, and voice activity detection with the AIC SDK.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "ai-coustics-skills",
+      "source": "./plugins/ai-coustics-skills",
+      "description": "Enhance speech, detect voice activity, and score call audio with ai-coustics models via the AIC SDK."
+    }
+  ]
+}

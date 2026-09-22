@@ -1,0 +1,21 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "Speech Enhancement",
+      "description": "Clean up speech with ai-coustics voice-focus and speech-enhancement models.",
+      "skills": ["ai-coustics-speech-enhancement"]
+    },
+    {
+      "title": "Audio Insight",
+      "description": "Score and diagnose call audio before it reaches your Voice AI stack.",
+      "skills": ["ai-coustics-audio-insight"]
+    },
+    {
+      "title": "Voice Activity Detection",
+      "description": "Detect speech, segment recordings, and tune turn-taking with the ai-coustics VAD models.",
+      "skills": ["ai-coustics-voice-activity-detection"]
+    }
+  ]
+}

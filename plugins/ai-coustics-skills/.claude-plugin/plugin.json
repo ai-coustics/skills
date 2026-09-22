@@ -1,0 +1,30 @@
+{
+  "name": "ai-coustics-skills",
+  "version": "1.0.0",
+  "description": "Enhance speech, detect voice activity, and score call audio with ai-coustics models via the AIC SDK.",
+  "displayName": "ai-coustics Skills",
+  "author": {
+    "name": "ai-coustics",
+    "url": "https://github.com/ai-coustics/skills"
+  },
+  "homepage": "https://docs.ai-coustics.com",
+  "repository": "https://github.com/ai-coustics/skills",
+  "license": "MIT",
+  "keywords": [
+    "ai-coustics",
+    "speech-enhancement",
+    "voice-focus",
+    "voice-isolation",
+    "audio-insight",
+    "audio-quality",
+    "tyto",
+    "voice-activity-detection",
+    "vad",
+    "turn-taking",
+    "voice-ai",
+    "aic-sdk"
+  ],
+  "skills": [
+    "./skills/"
+  ]
+}
