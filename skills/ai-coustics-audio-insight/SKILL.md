@@ -70,6 +70,15 @@ prompt as an independent covariate. Concretely:
   suitable remedy: it isolates the primary speaker and suppresses competing voices
   before the audio reaches VAD and STT (`ai-coustics-speech-enhancement`, alias `vf`).
   The same skill's Multi Speaker models address `noise` and `speaker_reverb`.
+- **Typed judges, not only free-text LLMs.** The same block works as an input to
+  typed-judgment APIs such as [TypeSafe Jev](https://docs.typesafe.ai), which answer
+  closed questions (a choice, a rubric score, a yes/no probability) about a text state
+  instead of writing prose. Put the transcript and the Tyto block in the state and ask
+  questions like "the caller's repeated request falls inside a degraded interval" or
+  "the agent's misunderstanding is explained by audio quality"; the returned
+  probabilities can be thresholded in your own code. Such judges see only text, so they
+  cannot detect a competing speaker or a muted talker themselves. Tyto is the audio-side
+  complement, not a replacement, and WER on the same clip is the other one.
 - **What it is not.** Tyto measures machine impact on VAD/STT/S2S. It is not a tone,
   empathy or sentiment signal, and the judge context says so explicitly so the LLM does
   not misuse it.
@@ -262,4 +271,5 @@ The risk band shown in the output is derived from the **mean** `risk_score`.
 - Batch call analysis guide: https://docs.ai-coustics.com/models/audio-insight/batch-call-analysis
 - Real-time analysis: https://docs.ai-coustics.com/models/audio-insight/real-time-analysis
 - Changelog (new model versions announced here): https://docs.ai-coustics.com/changelog
+- TypeSafe Jev, a typed-judgment API that can consume the judge block: https://docs.typesafe.ai
 - Docs index: https://docs.ai-coustics.com/llms.txt
